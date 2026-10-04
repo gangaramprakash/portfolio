@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharing & Learning | Gangaram Prakash</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #090d16;
+            --card-bg: rgba(18, 24, 38, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.35);
+            --accent: #8b5cf6;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--bg-dark); color: var(--text-main); line-height: 1.6; position: relative; }
+
+        .ambient-glow-1 { position: fixed; top: -10%; left: 20%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; z-index: -1; animation: floatGlow 12s infinite alternate ease-in-out; }
+        .ambient-glow-2 { position: fixed; bottom: 10%; right: 10%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; z-index: -1; animation: floatGlow 15s infinite alternate-reverse ease-in-out; }
+        @keyframes floatGlow { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(30px, -40px) scale(1.1); } }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem 5rem 1.5rem; }
+
+        nav { position: sticky; top: 1rem; z-index: 100; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--card-border); border-radius: 999px; padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 3.5rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+        .nav-brand { font-weight: 800; font-size: 1.1rem; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.3s ease; cursor: pointer; border: none; font-family: inherit; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; box-shadow: 0 4px 20px var(--primary-glow); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5); }
+        .btn-secondary { background: rgba(255, 255, 255, 0.05); color: var(--text-main); border: 1px solid var(--card-border); }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.2); }
+
+        header { text-align: center; margin-bottom: 2.5rem; }
+        header h1 { font-size: clamp(2.2rem, 4vw, 3rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+        
+        .card { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--card-border); border-radius: 20px; padding: 2.5rem; margin-bottom: 2rem; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); }
+        
+        /* Form Styling */
+        .feedback-form { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1rem; }
+        .form-group label { display: block; font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600; }
+        .form-control { width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); color: var(--text-main); padding: 0.9rem 1rem; border-radius: 12px; font-size: 1rem; transition: all 0.3s ease; outline: none; }
+        .form-control:focus { border-color: var(--primary); background: rgba(255, 255, 255, 0.05); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+        .form-control::placeholder { color: rgba(148, 163, 184, 0.5); }
+        textarea.form-control { resize: vertical; min-height: 120px; }
+        select.form-control { appearance: none; cursor: pointer; }
+        select.form-control option { background-color: var(--bg-dark); color: var(--text-main); }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+        /* Typography & Layout */
+        h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        h2::before { content: ''; display: inline-block; width: 4px; height: 1.25rem; background: linear-gradient(180deg, var(--primary), var(--accent)); border-radius: 999px; }
+        
+        .item-row { padding: 2rem; border-radius: 16px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.03); transition: all 0.3s ease; }
+        .item-row:hover { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.08); }
+        .item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem; }
+        .item-title { font-weight: 700; font-size: 1.25rem; color: var(--text-main); }
+        
+        .skill-tag { background-color: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); color: #a78bfa; padding: 0.4rem 1rem; border-radius: 999px; font-size: 0.85rem; font-weight: 600; }
+        
+        .story-text { color: var(--text-muted); margin-bottom: 1rem; line-height: 1.7; font-size: 1.05rem; }
+        
+        blockquote { border-left: 4px solid var(--accent); padding-left: 1.25rem; margin-top: 1.5rem; font-style: italic; color: var(--text-main); font-weight: 500; font-size: 1.1rem; }
+
+        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 640px) {
+            .two-col { grid-template-columns: 1fr; gap: 1.25rem; }
+            .card, .item-row { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <div class="container">
+        <!-- Navigation back to main page -->
+        <nav>
+            <span class="nav-brand">GP</span>
+            <a href="index.html" class="btn btn-secondary">← Back to Portfolio</a>
+        </nav>
+
+        <header class="reveal">
+            <h1>Sharing & Learning</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem;">
+                A collaborative space to exchange ideas. Read my experiences, or submit your own thoughts and feedback below.
+            </p>
+        </header>
+
+        <!-- Published Stories Feed -->
+        <section class="card reveal">
+            <h2>My Experiences & Learnings</h2>
+            
+            <article class="item-row">
+                <div class="item-header">
+                    <span class="item-title">The First Lesson I Learned About Depending on Others</span>
+                    <span class="skill-tag">Life Lesson</span>
+                </div>
+                
+                <p class="story-text">
+                    When I was in 5th class, one of my friends had recently shifted from Telugu medium to English medium. He came to me before our examinations and said, “You are good at Mathematics. Help me in the Mathematics exam, and I will help you in Telugu.”
+                </p>
+                <p class="story-text">
+                    At that time, I was good at Mathematics, but Telugu was not my strongest subject. So, I trusted him and accepted his deal. Our first exam was Mathematics. During the exam, I helped him whenever he needed me. I thought that when the Telugu exam came, he would do the same for me.
+                </p>
+                <p class="story-text">
+                    Then came the Telugu exam. While I was writing the exam, I tried to get his attention and asked him to show me the answers. But he stayed completely quiet. He didn't even turn around to look at me.
+                </p>
+                <p class="story-text">
+                    At that moment, I understood something. I realized that I had made a mistake by entering an examination depending on someone else. That was the first—and last—time in my life that I depended on another person to help me during an exam.
+                </p>
+                <p class="story-text">
+                    I didn't take that experience as a reason to hate him. Instead, I took it as a lesson. From that day until today, I have never depended on someone else to show me answers in an examination. I learned to trust my own preparation, my own knowledge, and my own ability.
+                </p>
+                
+                <!-- Highlighted Takeaway -->
+                <blockquote>
+                    "It may have happened when I was only in 5th class, but the lesson stayed with me for years: Never depend on someone else for something that determines your own success."
+                </blockquote>
+            </article>
+        </section>
+
+        <!-- Input Form Card -->
+        <section class="card reveal">
+            <h2>Share Your Thoughts</h2>
+            
+            <form id="sharingForm" class="feedback-form">
+                <div class="two-col">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="What should I call you?" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Your Email</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Where can I reply?" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="topic">What are you sharing today?</label>
+                    <select id="topic" name="topic" class="form-control">
+                        <option value="Experience">An Experience / Story</option>
+                        <option value="Thought">A Thought / Idea</option>
+                        <option value="Feedback">Constructive Feedback</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" class="form-control" placeholder="Write it all down here..." required></textarea>
+                </div>
+
+                <!-- Privacy/Publish Options -->
+                <div class="form-group" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                    <label>How should I handle your message?</label>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.75rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-main); font-weight: 500;">
+                            <input type="radio" name="privacy_preference" value="Private" checked style="accent-color: var(--primary); width: 18px; height: 18px;">
+                            Keep it private (Send to my email only)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-main); font-weight: 500;">
+                            <input type="radio" name="privacy_preference" value="Public Request" style="accent-color: var(--primary); width: 18px; height: 18px;">
+                            Publish on this website (Requires your approval first)
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; margin-top: 1rem; font-size: 1.05rem;">
+                    Submit Message
+                </button>
+            </form>
+        </section>
+
+        <footer style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+            <p>© 2026 Gangaram Prakash.</p>
+        </footer>
+    </div>
+
+    <!-- Scroll Reveal + Sharing System JavaScript -->
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+        const form = document.getElementById('sharingForm');
+        const feed = document.querySelector('.card:first-of-type');
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>'"]/g, char => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#39;',
+                '"': '&quot;'
+            }[char]));
+        }
+
+        async function loadPublished() {
+            try {
+                const response = await fetch('/api/published');
+                if (!response.ok) throw new Error('Failed to load published stories.');
+
+                const stories = await response.json();
+
+                // The original personal experience remains untouched.
+                // Only add approved community stories after it.
+                const existingCommunity = document.getElementById('communityStories');
+                if (existingCommunity) existingCommunity.remove();
+
+                const section = document.createElement('div');
+                section.id = 'communityStories';
+                section.style.marginTop = '2rem';
+
+                if (!Array.isArray(stories) || stories.length === 0) {
+                    section.innerHTML =
+                        '<p class="story-text">No community submissions have been approved yet.</p>';
+                } else {
+                    section.innerHTML = stories.map(story => `
+                        <article class="item-row" style="margin-bottom:1.25rem;">
+                            <div class="item-header">
+                                <span class="item-title">${escapeHtml(story.name)}'s ${escapeHtml(story.topic)}</span>
+                                <span class="skill-tag">Community</span>
+                            </div>
+                            <p class="story-text">${escapeHtml(story.message).replace(/\n/g, '<br>')}</p>
+                        </article>
+                    `).join('');
+                }
+
+                const heading = feed.querySelector('h2');
+                const personalStory = feed.querySelector('article.item-row');
+                if (personalStory) {
+                    personalStory.insertAdjacentElement('afterend', section);
+                } else if (heading) {
+                    heading.insertAdjacentElement('afterend', section);
+                }
+            } catch (error) {
+                console.error('Published stories error:', error);
+            }
+        }
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const button = form.querySelector('button[type="submit"]');
+            const data = new FormData(form);
+
+            button.disabled = true;
+            button.textContent = 'Submitting...';
+
+            try {
+                const response = await fetch('/api/submissions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: data.get('name'),
+                        email: data.get('email'),
+                        topic: data.get('topic'),
+                        message: data.get('message'),
+                        preference: data.get('privacy_preference')
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || result.message || 'Submission failed.');
+                }
+
+                alert(result.message || 'Your request was sent for approval. It will appear only after Prakash approves it.');
+                form.reset();
+                await loadPublished();
+
+            } catch (error) {
+                console.error('Submission error:', error);
+                alert(error.message || 'Could not save the submission.');
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Submit Message';
+            }
+        });
+
+        loadPublished();
+    </script>
+</body>
+</html>

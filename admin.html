@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Admin | Sharing Requests</title>
+<style>
+body{margin:0;background:#090d16;color:#f1f5f9;font-family:Arial,sans-serif}.wrap{max-width:1050px;margin:auto;padding:35px 18px}.card{background:#121826;border:1px solid #293449;border-radius:18px;padding:22px;margin-bottom:18px}.hidden{display:none}input,button{padding:12px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#fff}input{width:100%;box-sizing:border-box;margin:7px 0 14px}button{cursor:pointer;margin-right:8px}button.approve{background:#2563eb}button.reject{background:#7f1d1d}.submission{border-top:1px solid #293449;padding:20px 0}.submission:first-child{border-top:0}.meta{color:#94a3b8;font-size:14px}.message{white-space:pre-wrap;color:#cbd5e1;line-height:1.7;margin:14px 0}.status{font-weight:bold}.pending{color:#fbbf24}.approved{color:#4ade80}.rejected{color:#f87171}.private{color:#94a3b8}.top{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}
+</style></head><body><div class="wrap">
+<div id="login" class="card"><h1>Admin Approval</h1><p>Private dashboard for reviewing website submissions.</p><input id="username" placeholder="Username"><input id="password" type="password" placeholder="Password"><button class="approve" onclick="login()">Login</button><p id="loginMsg"></p></div>
+<div id="dashboard" class="hidden"><div class="top"><h1>Sharing Requests</h1><button onclick="logout()">Logout</button></div><div class="card"><div id="list">Loading...</div></div></div>
+</div><script>
+const loginPanel=document.getElementById('login');
+const dashboardPanel=document.getElementById('dashboard');
+const usernameInput=document.getElementById('username');
+const passwordInput=document.getElementById('password');
+const loginMsg=document.getElementById('loginMsg');
+const list=document.getElementById('list');
+let token=localStorage.getItem('adminToken'); if(token) showDashboard();
+async function login(){const r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:usernameInput.value,password:passwordInput.value})});const d=await r.json();if(!r.ok){loginMsg.textContent=d.error;return}localStorage.setItem('adminToken',d.token);token=d.token;showDashboard()}
+function logout(){localStorage.removeItem('adminToken');token=null;dashboardPanel.classList.add('hidden');loginPanel.classList.remove('hidden')}
+async function showDashboard(){loginPanel.classList.add('hidden');dashboardPanel.classList.remove('hidden');await load()}
+async function load(){const r=await fetch('/api/admin/submissions',{headers:{Authorization:'Bearer '+token}});if(r.status===401)return logout();const rows=await r.json();list.innerHTML=rows.length?rows.map(x=>`<div class="submission"><div class="top"><strong>${esc(x.name)} — ${esc(x.topic)}</strong><span class="status ${x.status.toLowerCase()}">${x.status}</span></div><div class="meta">${esc(x.email)} · ${new Date(x.created_at).toLocaleString()}</div><div class="message">${esc(x.message)}</div>${x.status==='PENDING'?`<button class="approve" onclick="act(${x.id},'approve')">✓ Approve & Publish</button><button class="reject" onclick="act(${x.id},'reject')">✕ Reject</button>`:''}</div>`).join(''):'<p>No submissions yet.</p>'}
+async function act(id,action){const r=await fetch('/api/admin/submissions/'+id,{method:'PATCH',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action})});const d=await r.json();if(!r.ok)return alert(d.error);load()}
+function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+</script></body></html>

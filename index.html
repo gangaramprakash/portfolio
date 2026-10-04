@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gangaram Prakash | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #090d16;
+            --card-bg: rgba(18, 24, 38, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.35);
+            --accent: #8b5cf6;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --tag-bg: rgba(255, 255, 255, 0.05);
+            --tag-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--bg-dark); color: var(--text-main); line-height: 1.6; overflow-x: hidden; position: relative; }
+
+        .ambient-glow-1 { position: fixed; top: -10%; left: 20%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; z-index: -1; animation: floatGlow 12s infinite alternate ease-in-out; }
+        .ambient-glow-2 { position: fixed; bottom: 10%; right: 10%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; z-index: -1; animation: floatGlow 15s infinite alternate-reverse ease-in-out; }
+        @keyframes floatGlow { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(30px, -40px) scale(1.1); } }
+
+        .container { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 5rem 1.5rem; }
+
+        nav { position: sticky; top: 1rem; z-index: 100; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--card-border); border-radius: 999px; padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 3.5rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+        .nav-brand { font-weight: 800; font-size: 1.1rem; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; gap: 1.25rem; list-style: none; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: all 0.3s ease; }
+        .nav-links a:hover { color: var(--text-main); }
+
+        header { text-align: center; margin-bottom: 3.5rem; position: relative; }
+        .badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.25); color: #60a5fa; font-size: 0.82rem; font-weight: 600; padding: 0.35rem 1rem; border-radius: 999px; margin-bottom: 1.25rem; }
+        .badge-dot { width: 7px; height: 7px; background-color: #3b82f6; border-radius: 50%; box-shadow: 0 0 8px #3b82f6; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
+        header h1 { font-size: clamp(2.5rem, 5vw, 3.75rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.75rem; background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.65rem 1.25rem; border-radius: 12px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; border: none; font-family: inherit; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; box-shadow: 0 4px 20px var(--primary-glow); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5); }
+        .btn-secondary { background: rgba(255, 255, 255, 0.05); color: var(--text-main); border: 1px solid var(--card-border); }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.2); }
+
+        .card { background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--card-border); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); }
+        .card:hover { border-color: rgba(99, 102, 241, 0.3); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35); }
+        
+        h2 { font-size: 1.35rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        h2::before { content: ''; display: inline-block; width: 4px; height: 1.25rem; background: linear-gradient(180deg, var(--primary), var(--accent)); border-radius: 999px; }
+        p.objective { font-size: 1.05rem; color: var(--text-muted); line-height: 1.7; }
+
+        .item-row { padding: 1.25rem; border-radius: 14px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.03); margin-bottom: 1.25rem; transition: all 0.3s ease; }
+        .item-row:hover { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.08); }
+        .item-row:last-child { margin-bottom: 0; }
+        .item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.35rem; flex-wrap: wrap; gap: 0.5rem; }
+        .item-title { font-weight: 700; font-size: 1.05rem; }
+        .item-title a { color: #60a5fa; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: color 0.2s ease; }
+        .item-title a:hover { color: #93c5fd; text-decoration: underline; }
+        .item-subtitle { font-weight: 600; color: var(--accent); font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .item-meta { color: var(--text-muted); font-size: 0.85rem; font-weight: 500; }
+        ul.project-details { margin-top: 0.75rem; padding-left: 1.2rem; color: var(--text-muted); font-size: 0.95rem; }
+        ul.project-details li { margin-bottom: 0.4rem; }
+
+        .skills-category { margin-bottom: 1.25rem; }
+        .skills-category:last-child { margin-bottom: 0; }
+        .skills-category strong { display: block; margin-bottom: 0.6rem; font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .skills-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+        .skill-tag { background-color: var(--tag-bg); border: 1px solid var(--tag-border); padding: 0.45rem 1.1rem; border-radius: 999px; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease; }
+        .skill-tag:hover { background-color: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.4); color: #93c5fd; transform: translateY(-2px); }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .chip-list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; }
+        .chip-item { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+
+        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        footer { text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-top: 3rem; }
+
+        @media (max-width: 640px) {
+            .container { padding: 1rem 1rem 3rem 1rem; }
+            nav { flex-direction: column; gap: 0.75rem; padding: 0.85rem; }
+            .two-col { grid-template-columns: 1fr; gap: 0; }
+            .card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <div class="container">
+        <!-- Floating Navigation -->
+        <nav>
+            <span class="nav-brand">GP</span>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="sharing.html">Share & Learn</a></li>
+            </ul>
+        </nav>
+
+        <!-- Hero / Contact -->
+        <header id="about" class="reveal">
+            <div class="badge">
+                <span class="badge-dot"></span> Available for Opportunities
+            </div>
+            <h1>Gangaram Prakash</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                CSE (Data Science) Student &amp; Web Developer building scalable, data-driven web applications.
+            </p>
+            <div class="contact-links">
+                <a href="mailto:prakashgangaram16@gmail.com" class="btn btn-primary">
+                    ✉ prakashgangaram16@gmail.com
+                </a>
+                <!-- Link to the new page -->
+                <a href="sharing.html" class="btn btn-secondary">
+                    💡 Sharing & Learning
+                </a>
+                <a href="https://www.linkedin.com/in/gangaram-prakash16" target="_blank" class="btn btn-secondary">
+                    LinkedIn ↗
+                </a>
+                <a href="https://github.com/gangaramprakash" target="_blank" class="btn btn-secondary">
+                    GitHub ↗
+                </a>
+            </div>
+        </header>
+
+        <!-- Career Objective -->
+        <section class="card reveal">
+            <h2>Career Objective</h2>
+            <p class="objective">
+                CSE (Data Science) student skilled in Python, Java, and web development. Passionate about engineering clean web applications, solving complex problems, and exploring data-driven solutions.
+            </p>
+        </section>
+
+        <!-- Technical Skills -->
+        <section id="skills" class="card reveal">
+            <h2>Technical Skills</h2>
+            <div class="skills-category">
+                <strong>Programming Languages</strong>
+                <div class="skills-grid">
+                    <span class="skill-tag">C</span><span class="skill-tag">Java</span><span class="skill-tag">Python</span><span class="skill-tag">PHP</span>
+                </div>
+            </div>
+            <div class="skills-category">
+                <strong>Web Development</strong>
+                <div class="skills-grid">
+                    <span class="skill-tag">HTML5</span><span class="skill-tag">CSS3</span><span class="skill-tag">JavaScript</span>
+                </div>
+            </div>
+            <div class="skills-category">
+                <strong>Databases</strong>
+                <div class="skills-grid">
+                    <span class="skill-tag">SQL</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects -->
+        <section id="projects" class="card reveal">
+            <h2>Projects</h2>
+            <div class="item-row">
+                <div class="item-header">
+                    <span class="item-title">
+                        <a href="https://gangaramprakash.github.io/attendance-app/attendance.html" target="_blank">Attendance Calculator ↗</a>
+                    </span>
+                    <span class="item-meta">Live Demo</span>
+                </div>
+                <ul class="project-details">
+                    <li>Built an attendance prediction tool featuring exact class calculations for academic tracking.</li>
+                    <li>Integrated real-time analytics to monitor user activity, engagement, and prediction history.</li>
+                    <li>Deployed live and managed seamlessly using GitHub Pages.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Education -->
+        <section id="education" class="card reveal">
+            <h2>Education</h2>
+            <div class="item-row">
+                <div class="item-header">
+                    <span class="item-title">B.TECH. in Computer Science (Data Science)</span>
+                    <span class="item-meta">2024 - Present</span>
+                </div>
+                <div class="item-subtitle">TKR College of Engineering and Technology</div>
+                <div class="item-meta">CGPA: 8.25 / 10</div>
+            </div>
+            <div class="item-row">
+                <div class="item-header">
+                    <span class="item-title">Intermediate (MPC)</span>
+                    <span class="item-meta">2022 - 2024</span>
+                </div>
+                <div class="item-subtitle">MJPTBCW Residential Junior College</div>
+                <div class="item-meta">Marks: 939 / 1000</div>
+            </div>
+            <div class="item-row">
+                <div class="item-header">
+                    <span class="item-title">SSC</span>
+                    <span class="item-meta">2021 - 2022</span>
+                </div>
+                <div class="item-subtitle">MJPTBCW Residential School</div>
+                <div class="item-meta">GPA: 9.5 / 10</div>
+            </div>
+        </section>
+
+        <!-- Bottom Grid: Interests & Languages -->
+        <div class="two-col">
+            <section class="card reveal">
+                <h2>Interests</h2>
+                <ul class="chip-list">
+                    <li class="chip-item">Problem Solving</li>
+                    <li class="chip-item">Coding Challenges</li>
+                    <li class="chip-item">Story Writer</li>
+                </ul>
+            </section>
+            <section class="card reveal">
+                <h2>Languages</h2>
+                <ul class="chip-list">
+                    <li class="chip-item">English</li>
+                    <li class="chip-item">Telugu</li>
+                </ul>
+            </section>
+        </div>
+
+        <footer>
+            <p>© 2026 Gangaram Prakash. Designed with The Help of My Best Friend Gemini Ai.</p>
+        </footer>
+    </div>
+
+    <!-- Scroll Reveal JavaScript -->
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('active'); } });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    </script>
+</body>
+</html>
