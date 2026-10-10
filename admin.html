@@ -1,22 +1,294 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Admin | Sharing Requests</title>
-<style>
-body{margin:0;background:#090d16;color:#f1f5f9;font-family:Arial,sans-serif}.wrap{max-width:1050px;margin:auto;padding:35px 18px}.card{background:#121826;border:1px solid #293449;border-radius:18px;padding:22px;margin-bottom:18px}.hidden{display:none}input,button{padding:12px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#fff}input{width:100%;box-sizing:border-box;margin:7px 0 14px}button{cursor:pointer;margin-right:8px}button.approve{background:#2563eb}button.reject{background:#7f1d1d}.submission{border-top:1px solid #293449;padding:20px 0}.submission:first-child{border-top:0}.meta{color:#94a3b8;font-size:14px}.message{white-space:pre-wrap;color:#cbd5e1;line-height:1.7;margin:14px 0}.status{font-weight:bold}.pending{color:#fbbf24}.approved{color:#4ade80}.rejected{color:#f87171}.private{color:#94a3b8}.top{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}
-</style></head><body><div class="wrap">
-<div id="login" class="card"><h1>Admin Approval</h1><p>Private dashboard for reviewing website submissions.</p><input id="username" placeholder="Username"><input id="password" type="password" placeholder="Password"><button class="approve" onclick="login()">Login</button><p id="loginMsg"></p></div>
-<div id="dashboard" class="hidden"><div class="top"><h1>Sharing Requests</h1><button onclick="logout()">Logout</button></div><div class="card"><div id="list">Loading...</div></div></div>
-</div><script>
-const loginPanel=document.getElementById('login');
-const dashboardPanel=document.getElementById('dashboard');
-const usernameInput=document.getElementById('username');
-const passwordInput=document.getElementById('password');
-const loginMsg=document.getElementById('loginMsg');
-const list=document.getElementById('list');
-let token=localStorage.getItem('adminToken'); if(token) showDashboard();
-async function login(){const r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:usernameInput.value,password:passwordInput.value})});const d=await r.json();if(!r.ok){loginMsg.textContent=d.error;return}localStorage.setItem('adminToken',d.token);token=d.token;showDashboard()}
-function logout(){localStorage.removeItem('adminToken');token=null;dashboardPanel.classList.add('hidden');loginPanel.classList.remove('hidden')}
-async function showDashboard(){loginPanel.classList.add('hidden');dashboardPanel.classList.remove('hidden');await load()}
-async function load(){const r=await fetch('/api/admin/submissions',{headers:{Authorization:'Bearer '+token}});if(r.status===401)return logout();const rows=await r.json();list.innerHTML=rows.length?rows.map(x=>`<div class="submission"><div class="top"><strong>${esc(x.name)} — ${esc(x.topic)}</strong><span class="status ${x.status.toLowerCase()}">${x.status}</span></div><div class="meta">${esc(x.email)} · ${new Date(x.created_at).toLocaleString()}</div><div class="message">${esc(x.message)}</div>${x.status==='PENDING'?`<button class="approve" onclick="act(${x.id},'approve')">✓ Approve & Publish</button><button class="reject" onclick="act(${x.id},'reject')">✕ Reject</button>`:''}</div>`).join(''):'<p>No submissions yet.</p>'}
-async function act(id,action){const r=await fetch('/api/admin/submissions/'+id,{method:'PATCH',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action})});const d=await r.json();if(!r.ok)return alert(d.error);load()}
-function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-</script></body></html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Sharing Requests</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090d16;
+      --card: #121826;
+      --border: #293449;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --blue: #2563eb;
+      --red: #7f1d1d;
+      --green: #4ade80;
+      --yellow: #fbbf24;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Arial, sans-serif; line-height: 1.6; }
+    .wrap { max-width: 1050px; margin: 0 auto; padding: 28px 18px 60px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 22px; margin-bottom: 18px; }
+    .hidden { display: none !important; }
+    input, button { padding: 12px 14px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: #fff; font: inherit; }
+    input { display: block; width: 100%; margin: 7px 0 14px; }
+    button { cursor: pointer; margin: 5px 8px 5px 0; }
+    button:disabled { cursor: wait; opacity: .6; }
+    .approve { background: var(--blue); border-color: var(--blue); }
+    .reject { background: var(--red); border-color: var(--red); }
+    .private { background: #334155; }
+    .submission { border-top: 1px solid var(--border); padding: 20px 0; overflow-wrap: anywhere; }
+    .submission:first-child { border-top: 0; }
+    .meta { color: var(--muted); font-size: 14px; }
+    .message { white-space: pre-wrap; color: #cbd5e1; line-height: 1.7; margin: 14px 0; }
+    .status { font-weight: 700; }
+    .pending { color: var(--yellow); }
+    .approved { color: var(--green); }
+    .rejected { color: #f87171; }
+    .private-status { color: var(--muted); }
+    .top { display: flex; justify-content: space-between; gap: 15px; align-items: center; flex-wrap: wrap; }
+    .notice { color: var(--muted); min-height: 1.5em; }
+    h1 { line-height: 1.2; }
+    @media (max-width: 500px) { .wrap { padding: 18px 12px 40px; } .card { padding: 16px; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section id="login" class="card">
+      <h1>Admin Approval</h1>
+      <p>Private dashboard for reviewing website submissions.</p>
+      <form id="loginForm">
+        <label for="username">Username</label>
+        <input id="username" name="username" autocomplete="username" required>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button class="approve" type="submit" id="loginButton">Login</button>
+      </form>
+      <p id="loginMsg" class="notice" role="status"></p>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="top">
+        <h1>Sharing Requests</h1>
+        <div>
+          <button id="refreshButton" type="button">Refresh</button>
+          <button id="logoutButton" type="button">Logout</button>
+        </div>
+      </div>
+      <p id="dashboardMsg" class="notice" role="status"></p>
+      <section class="card">
+        <div id="list">Loading requests...</div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    'use strict';
+
+    const loginPanel = document.getElementById('login');
+    const dashboardPanel = document.getElementById('dashboard');
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const loginButton = document.getElementById('loginButton');
+    const loginMsg = document.getElementById('loginMsg');
+    const dashboardMsg = document.getElementById('dashboardMsg');
+    const list = document.getElementById('list');
+    const refreshButton = document.getElementById('refreshButton');
+    const logoutButton = document.getElementById('logoutButton');
+
+    let token = localStorage.getItem('adminToken') || '';
+
+    function escapeHtml(value) {
+      return String(value == null ? '' : value).replace(/[&<>'"]/g, function (character) {
+        const entities = {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        };
+        return entities[character];
+      });
+    }
+
+    function showLogin(message) {
+      token = '';
+      localStorage.removeItem('adminToken');
+      dashboardPanel.classList.add('hidden');
+      loginPanel.classList.remove('hidden');
+      if (message) loginMsg.textContent = message;
+    }
+
+    function showDashboard() {
+      loginPanel.classList.add('hidden');
+      dashboardPanel.classList.remove('hidden');
+      loadSubmissions();
+    }
+
+    async function readJson(response) {
+      const text = await response.text();
+      try {
+        return text ? JSON.parse(text) : {};
+      } catch (error) {
+        throw new Error('The server returned an invalid response. Please refresh and try again.');
+      }
+    }
+
+    loginForm.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      loginButton.disabled = true;
+      loginMsg.textContent = 'Signing in...';
+
+      try {
+        const response = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: usernameInput.value.trim(),
+            password: passwordInput.value
+          })
+        });
+        const data = await readJson(response);
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Login failed. Check your credentials.');
+        }
+        if (!data.token) {
+          throw new Error('Login response did not include an authentication token.');
+        }
+
+        token = data.token;
+        localStorage.setItem('adminToken', token);
+        loginMsg.textContent = '';
+        showDashboard();
+      } catch (error) {
+        loginMsg.textContent = error.message || 'Unable to log in.';
+      } finally {
+        loginButton.disabled = false;
+      }
+    });
+
+    function logout() {
+      showLogin('You have been logged out.');
+      passwordInput.value = '';
+    }
+
+    logoutButton.addEventListener('click', logout);
+    refreshButton.addEventListener('click', loadSubmissions);
+
+    async function loadSubmissions() {
+      if (!token) {
+        showLogin();
+        return;
+      }
+
+      list.textContent = 'Loading requests...';
+      dashboardMsg.textContent = '';
+
+      try {
+        const response = await fetch('/api/admin/submissions', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const rows = await readJson(response);
+
+        if (response.status === 401 || response.status === 403) {
+          showLogin('Your admin session expired. Please log in again.');
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(rows.error || 'Could not load submissions.');
+        }
+        if (!Array.isArray(rows)) {
+          throw new Error('Unexpected submissions response from server.');
+        }
+
+        if (rows.length === 0) {
+          list.textContent = 'No submissions yet.';
+          return;
+        }
+
+        list.innerHTML = rows.map(function (item) {
+          const status = String(item.status || 'UNKNOWN').toUpperCase();
+          let statusClass = 'private-status';
+          if (status === 'PENDING') statusClass = 'pending';
+          if (status === 'APPROVED') statusClass = 'approved';
+          if (status === 'REJECTED') statusClass = 'rejected';
+
+          const dateValue = item.created_at ? new Date(item.created_at) : null;
+          const dateText = dateValue && !Number.isNaN(dateValue.getTime())
+            ? dateValue.toLocaleString()
+            : 'Date unavailable';
+
+          const actions = status === 'PENDING'
+            ? '<div class="actions">' +
+              '<button class="approve" type="button" data-action="approve" data-id="' + escapeHtml(item.id) + '">✓ Approve &amp; Publish</button>' +
+              '<button class="reject" type="button" data-action="reject" data-id="' + escapeHtml(item.id) + '">✕ Reject</button>' +
+              '</div>'
+            : '';
+
+          return '<article class="submission">' +
+            '<div class="top"><strong>' + escapeHtml(item.name) + ' — ' + escapeHtml(item.topic) + '</strong>' +
+            '<span class="status ' + statusClass + '">' + escapeHtml(status) + '</span></div>' +
+            '<div class="meta">' + escapeHtml(item.email) + ' · ' + escapeHtml(dateText) + '</div>' +
+            '<div class="message">' + escapeHtml(item.message) + '</div>' +
+            actions +
+            '</article>';
+        }).join('');
+      } catch (error) {
+        list.textContent = error.message || 'Could not load submissions.';
+        dashboardMsg.textContent = 'Check your connection and try Refresh.';
+      }
+    }
+
+    list.addEventListener('click', async function (event) {
+      const button = event.target.closest('button[data-action][data-id]');
+      if (!button) return;
+
+      const id = button.dataset.id;
+      const action = button.dataset.action;
+
+      if (!id || !['approve', 'reject'].includes(action)) {
+        dashboardMsg.textContent = 'Invalid request action.';
+        return;
+      }
+
+      const confirmMessage = action === 'approve'
+        ? 'Approve and publish this submission?'
+        : 'Reject this submission?';
+
+      if (!window.confirm(confirmMessage)) return;
+
+      const actionButtons = button.parentElement.querySelectorAll('button');
+      actionButtons.forEach(function (element) { element.disabled = true; });
+      dashboardMsg.textContent = action === 'approve' ? 'Approving and publishing...' : 'Rejecting submission...';
+
+      try {
+        const response = await fetch('/api/admin/submissions/' + encodeURIComponent(id), {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({ action: action })
+        });
+        const data = await readJson(response);
+
+        if (response.status === 401 || response.status === 403) {
+          showLogin('Your admin session expired. Please log in again.');
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.error || 'Could not update this submission.');
+        }
+
+        dashboardMsg.textContent = action === 'approve'
+          ? 'Approved and published successfully.'
+          : 'Submission rejected.';
+        await loadSubmissions();
+      } catch (error) {
+        dashboardMsg.textContent = error.message || 'Action failed. Please try again.';
+        actionButtons.forEach(function (element) { element.disabled = false; });
+      }
+    });
+
+    if (token) {
+      showDashboard();
+    } else {
+      showLogin();
+    }
+  </script>
+</body>
+</html>
