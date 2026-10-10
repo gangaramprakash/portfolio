@@ -269,7 +269,9 @@
                         email: data.get('email'),
                         topic: data.get('topic'),
                         message: data.get('message'),
-                        preference: data.get('privacy_preference')
+                        preference: data.get('privacy_preference') === 'Public Request'
+                            ? 'PUBLIC'
+                            : 'PRIVATE'
                     })
                 });
 
